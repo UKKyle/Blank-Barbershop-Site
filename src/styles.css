@@ -600,3 +600,21 @@ footer a,.footer a,.footer-links a{color:#424941}
  .services-shell{gap:32px}
  .review-wall blockquote{padding:25px 20px}
 }
+
+/* Master hero: keep the brand headline inside its own column on wide displays.
+   Text-free template artwork can now crop safely at any viewport size. */
+@media (min-width: 901px) {
+  .hero{grid-template-columns:minmax(0, 52%) minmax(0, 48%);overflow:hidden}
+  .hero-copy{min-width:0;position:relative;z-index:1;padding-left:clamp(32px,5vw,95px);padding-right:clamp(28px,3vw,56px)}
+  .hero .hero-top,.hero .hero-bottom{min-width:0;max-width:100%}
+  .hero h1{font-size:clamp(50px,5.35vw,94px)!important;line-height:.94!important;letter-spacing:-.056em!important;overflow-wrap:normal}
+  .hero-image{min-width:0;overflow:hidden}
+  .hero-image img{width:100%;height:100%;object-fit:cover;object-position:center}
+}
+@media (min-width: 901px) and (max-width:1200px) {
+  .hero h1{font-size:clamp(48px,5.1vw,70px)!important}
+}
+@media (max-width:900px){
+ .hero h1{max-width:100%;font-size:clamp(42px,10vw,72px)!important;line-height:.96!important;letter-spacing:-.05em!important}
+ .hero-image img{object-fit:cover;object-position:center}
+}
