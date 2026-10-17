@@ -280,7 +280,7 @@ function App() {
           <a className="trust-item" href={business.googleMaps} target="_blank" rel="noopener noreferrer">
             <span className="trust-icon" aria-hidden="true"><MapPin size={23} strokeWidth={1.6} /></span>
             <span className="trust-copy">
-              <span className="trust-primary"><strong>25 The Green</strong></span>
+              <span className="trust-primary"><strong>Your location</strong></span>
               <span className="trust-detail">Your location · Directions <ChevronRight size={14} aria-hidden="true" /></span>
             </span>
           </a>
@@ -330,14 +330,14 @@ function App() {
               <blockquote className={index === 0 ? 'review-featured' : ''} key={name}>
                 <div className="quote-stars">{[0,1,2,3,4].map(i => <Star key={i} size={13} fill="currentColor" />)}</div>
                 <p>{quote}</p>
-                <cite>{name}<span>Google review</span></cite>
+                <cite>{name}<span>Example review</span></cite>
               </blockquote>
             ))}
           </div>
 
           <div className="reviews-cta">
             <span>Read more customer feedback</span>
-            <a href={business.googleMaps} target="_blank" rel="noreferrer">View Google profile</a>
+            <a href={business.googleMaps} target="_blank" rel="noreferrer">View location details</a>
           </div>
         </section>
 
@@ -405,7 +405,7 @@ function App() {
 
           <div className="visit-panel">
             <p className="section-kicker">Visit the shop</p>
-            <h2>25 The Green</h2>
+            <h2>Your location</h2>
             <p className="visit-address">{business.address}</p>
             <div className="visit-actions">
               <a className="visit-primary" href={business.googleMaps} target="_blank" rel="noreferrer"><MapPin size={16} /> Get directions</a>
