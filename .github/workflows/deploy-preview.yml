@@ -1,5 +1,7 @@
 name: Deploy blank preview to Cloudflare Workers
 on:
+  push:
+    branches: [main]
   workflow_dispatch:
 jobs:
   deploy:
