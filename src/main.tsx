@@ -60,7 +60,7 @@ const reviews = [
 ];
 
 function App() {
-  const [unlocked, setUnlocked] = useState(() => sessionStorage.getItem('mh-preview') === '1');
+  const [unlocked, setUnlocked] = useState(() => sessionStorage.getItem('barbershop-preview') === '1');
   const [pin, setPin] = useState('');
   const [error, setError] = useState('');
   const [menuOpen, setMenuOpen] = useState(false);
@@ -94,7 +94,7 @@ function App() {
   const unlock = (event: FormEvent) => {
     event.preventDefault();
     if (pin === '0000') {
-      sessionStorage.setItem('mh-preview', '1');
+      sessionStorage.setItem('barbershop-preview', '1');
       setUnlocked(true);
       setError('');
       return;
@@ -140,7 +140,7 @@ function App() {
 
   useEffect(()=>{
     let active=true;
-    fetch('/api/booking-config',{cache:'no-store'}).then(r=>r.json()).then((v:{emailEnabled?:boolean;turnstileSiteKey?:string})=>{
+    fetch('/api/booking-config',{cache:'no-store'}).then(r=>r.json()).then((v:{previewOnly?:boolean;emailEnabled?:boolean;turnstileSiteKey?:string})=>{
       if(!active)return;
       setPreviewOnly(v.previewOnly!==false);
       setEmailBooking(v.emailEnabled===true);
