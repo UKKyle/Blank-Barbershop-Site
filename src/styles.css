@@ -531,3 +531,72 @@ footer{background:#201812;border-top-color:rgba(208,173,122,.15)}
  .terms-agreement{align-items:flex-start}
  .site section{scroll-margin-top:70px}
 }
+
+
+/* LIGHT MASTER THEME — rebrandable vanilla/ivory foundation */
+:root{color-scheme:light;--cream:#272925;--black:#20221f;--charcoal:#faf9f6;--walnut:#f1eee8;--walnut2:#eae6df;--brass:#555a50;--brass2:#70766b;--muted:#676c65;--line:rgba(46,49,44,.14)}
+html,body,.site{background:#faf9f6;color:#272925}
+.site{background:#faf9f6}
+.gate{background:#f4f1eb;color:#272925}
+.gate-panel{background:#fffdfa;border:1px solid #e5e0d7;box-shadow:0 22px 65px #29261d14;border-radius:16px}
+.gate h1,.gate p,.gate label{color:#272925}
+.gate-brand{color:#687167}
+.gate p{color:#6d706a}
+.pin-row input{background:#fff;color:#292c27;border:1px solid #d7d3cb;border-radius:7px}
+.pin-row button,.header-cta,.hero-primary,.visit-primary,.booking-link,.booking-submit,.booking-modal-dismiss,.terms-done{background:#424b43!important;color:#fff!important;border-color:#424b43!important;border-radius:7px}
+header{background:rgba(255,253,249,.97);border-bottom:1px solid #e8e4dd;color:#252924}
+.brand,nav button,nav a,.menu-button{color:#252924}
+.preview-note,.preview-ticker{background:#f0ede7!important;color:#62665e!important;border-color:#e4e0d7}
+.preview-ticker-set>span:not(.ticker-dot){color:#646960}
+.hero{background:#f7f4ee}
+.hero-copy{background:linear-gradient(135deg,#fffdfa,#f2efe8)!important;color:#222720}
+.hero h1,.hero-service-line{color:#222720}
+.hero-location{color:#6f786d}
+.hero-secondary,.visit-secondary{color:#30352e;border-color:#c6c7bf}
+.rating-row,.rating-row span{color:#687067}
+.hero-image{background:#ede8df}
+.hero-image:before{background:linear-gradient(90deg,rgba(247,244,238,.15),transparent 30%)}
+.hero-image img{filter:none}
+.services,.work-showcase{background:#fffdfa!important;color:#252923}
+.services-copy h2,.services-copy>p,.service-line h3,.service-line p,.service-line>span{color:#292d27}
+.services-copy>p,.service-line p{color:#666c64}
+.services-shell{gap:clamp(28px,5vw,72px)}
+.service-menu,.service-line{border-color:#e4e0d8}
+.section-kicker{color:#767d70}
+.reviews{background:#f1eee8!important;color:#252923}
+.reviews-head h2,.review-score>strong,.review-wall p,.review-wall cite{color:#292d27}
+.review-score span,.review-wall cite span,.reviews-cta{color:#6a7067}
+.review-wall,.review-wall blockquote,.reviews-cta{border-color:#d9d6ce}
+.reviews-cta a{color:#3b493e;border-color:#9ba69b}
+.visit,.visit-panel{background:#fffdfa!important;color:#292d27}
+.visit-panel h2,.visit-panel p,.visit-panel a{color:#292d27}
+.map-wrap{background:#eeeae3}
+.map-wrap iframe{filter:none}
+footer,.footer,.footer-bottom{background:#f1eee8!important;color:#30342d}
+footer a,.footer a,.footer-links a{color:#424941}
+.trust-strip{background:#f5f2ec!important;border-color:#e4e0d7!important}
+.trust-strip .trust-item{border-color:#dedbd3!important;color:#30362f}
+.trust-strip .trust-eyebrow,.trust-strip .trust-detail{color:#6d736b!important}
+.trust-strip .trust-primary,.trust-strip .trust-primary strong,.trust-strip .trust-primary small{color:#2c332d!important}
+.simple-booking,.booking-preview,.booking-demo{background:#f8f6f1!important;color:#272c26!important;border-color:#ddd9d1!important}
+.booking-preview-head h3,.simple-booking-label,.booking-field-label,.booking-step,.booking-selection-summary,.booking-selection-summary strong{color:#2d322b!important}
+.simple-booking-days button,.simple-booking-times button,.booking-preview button:not(.booking-submit){background:#fffdfa!important;color:#383d35!important;border:1px solid #dad8d1!important;border-radius:8px}
+.simple-booking-days button.selected,.simple-booking-times button.selected,.booking-preview button.selected{background:#e1e8de!important;color:#273b2c!important;border-color:#84978a!important}
+.services .simple-booking-form>input#customer-booking-name,.services .simple-booking-form>input.booking-email-input,.simple-booking-form>input{background:#fff!important;color:#292d27!important;border:1px solid #d4d1ca!important;border-radius:7px}
+.simple-booking-form>label,.booking-agreement,.booking-agreement span,.simple-booking-form .booking-privacy,.booking-preview-foot,.booking-preview-foot p,.booking-phone-option,.booking-selection-summary span{color:#50574e!important}
+.services .simple-booking .booking-phone-option,.services .simple-booking .booking-phone-option a{color:#35473a!important}
+.terms-agreement .terms-link,.simple-booking-form .booking-privacy a{color:#384f3d!important}
+.terms-backdrop,.booking-modal-backdrop{background:rgba(34,38,32,.52)}
+.terms-dialog,.booking-modal{background:#fffdfa!important;color:#272b25!important;border:1px solid #e4e0d7!important;border-radius:14px}
+.terms-dialog-head{border-color:#e5e2db}
+.terms-dialog h2,.terms-dialog-body h3,.terms-dialog-body p,.terms-dialog-body a,.booking-modal h2,.booking-modal p{color:#292e29!important}
+.terms-eyebrow,.preview-detail-note{color:#667167!important}
+.terms-close{color:#30372e;background:#f5f2ec;border-color:#ddd8ce}
+.mobile-actions{background:#fffdfa!important;border-top:1px solid #e5e1d8}
+.mobile-actions a{color:#30382f!important}
+@media(max-width:760px){
+ .hero-copy{padding-top:clamp(44px,9vw,78px);padding-bottom:clamp(36px,8vw,66px)}
+ .services,.reviews,.work-showcase{padding-top:clamp(48px,9vw,76px);padding-bottom:clamp(48px,9vw,76px)}
+ .services-shell{gap:32px}
+ .review-wall blockquote{padding:25px 20px}
+}
