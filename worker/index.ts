@@ -196,6 +196,7 @@ export default {
   const isAdmin=url.pathname==='/admin'||url.pathname.startsWith('/admin/')||url.pathname.startsWith('/admin/api/');
   if (url.pathname==='/api/booking-config' && request.method==='GET') return json({previewOnly:PREVIEW_ONLY,emailEnabled:emailEnabled(env),turnstileSiteKey:emailEnabled(env)?env.TURNSTILE_SITE_KEY:null});
   if (url.pathname==='/api/slots' && request.method==='GET') {
+    if(PREVIEW_ONLY){const {date,time}=londonParts(new Date());return json({slots:proposedSlots(date,time).map(({date,time})=>({date,time}))});}
     if(!env.BOOKINGS_DB)return json({slots:[]},503);
     try {return json({slots:(await getSlots(env,false)).map(({date,time})=>({date,time}))});}
     catch {return json({slots:[]},503);}
