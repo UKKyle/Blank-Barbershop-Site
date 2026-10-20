@@ -6,7 +6,7 @@
 
 1. Research a trading barbershop, verify its email and assess whether it actually has an existing website. Record evidence; do not guess reviews, opening hours, services or staff.
 2. Create a new private GitHub repo for that specific business. Copy this repository into it; do not change the original.
-3. Edit **`src/client-config.ts`**. Set `name`, `shortName`, two `headline` lines, `locationLabel`, `tagline`, phone, address, map URL, Facebook URL, opening-hours *display*, verified review rating/count, services, review quotations and gallery photos. Where anything is unverified, keep placeholders.
+3. Edit **`src/client-config.ts`**. Set `name`, `shortName`, two `headline` lines, `locationLabel`, `tagline`, phone, address, map URL, Facebook URL, opening-hours display plus booking-hours schedule, verified review rating/count, review quotations and gallery photos. Where anything is unverified, keep placeholders.
 4. Add rights-cleared files under `public/images/` and adjust the paths in the config. Prefer images provided by the business or explicitly licensed for commercial use; don't scrape photos without permission.
 5. To change colours, edit `src/styles.css` (the final `LIGHT MASTER THEME` overrides currently determine most colours). Keep contrast and responsive behaviour intact. The dashboard has its own styling in `public/admin/index.html`.
 6. Change the **Worker name** in `wrangler.jsonc` to a new, unique `<client>-preview`. Set up **new GitHub Cloudflare secrets** in the client repository and verify the correct account. Never reuse Mr Handsome's D1 or Access resources.
@@ -16,9 +16,9 @@
 
 ## Important technical boundaries
 
-- `src/client-config.ts` drives customer-facing site identity and content. It does **not** configure live slot generation, production email subjects or backend address, which are still defined in `worker/index.ts`. Those must be updated and tested for each production client.
+- `src/client-config.ts` drives website identity, imagery, reviews, opening-hours display and Worker-generated booking hours / email shop identity. The slot generator remains a basic shared one-hour schedule, not a full multi-barber booking engine; confirm each new client's appointment model before enabling bookings.
 - The admin dashboard heading is currently generic; change it in the client repo only if desired. Don't expose real admin records on an unprotected public URL.
-- Static marketing claims and sample reviews must be verified before publication.
+- The optional services list in config is reference content only (there is no public service-menu component in this version). Static marketing claims and sample reviews must be verified before publication.
 - A successful build is not a substitute for browser QA.
 
 ## Sales pipeline
