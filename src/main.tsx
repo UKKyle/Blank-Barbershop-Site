@@ -2,62 +2,10 @@ import React, { FormEvent, useEffect, useState } from 'react';
 import { createRoot } from 'react-dom/client';
 import { CalendarDays, ChevronLeft, ChevronRight, MapPin, Menu, Phone, Star, X } from 'lucide-react';
 import './styles.css';
-const heroImage = '/images/template-hero.svg';
-const workImage1 = '/images/template-cut-1.svg';
-const workImage2 = '/images/template-cut-2.svg';
-const workImage3 = '/images/template-cut-3.svg';
-const workImage4 = '/images/template-cut-4.svg';
-
-const business = {
-  name: 'Your Barbershop',
-  phone: 'Your shop telephone',
-  phoneHref: '#contact',
-  address: "Your shop address",
-  rating: 0,
-  reviews: 0,
-  facebook: '#contact',
-  googleMaps: "#contact",
-  googleEmbed: "",
-  heroImage,
-  hours: [
-    ['Monday–Friday', 'Hours to be confirmed'],
-    ['Saturday', 'Hours to be confirmed'],
-    ['Sunday', 'Hours to be confirmed'],
-  ],
-};
-
-const services = [
-  ['Haircuts', 'Classic and modern cuts, finished to suit your style.'],
-  ['Skin fades', 'Sharp fades and tapers with clean blending and detail.'],
-  ['Hair & beard', 'A complete tidy-up with haircut, trim and beard shape.'],
-  ['Wet & dry shave', 'Traditional shaving options for a clean finish.'],
-];
-
-
-const workImages = [
-  {
-    src: workImage1,
-    alt: 'Barber styling a finished haircut at Your Barbershop',
-  },
-  {
-    src: workImage2,
-    alt: 'Rear fade haircut at Your Barbershop',
-  },
-  {
-    src: workImage3,
-    alt: 'Fade and beard finish at Your Barbershop',
-  },
-  {
-    src: workImage4,
-    alt: 'Side-part haircut finished at Your Barbershop',
-  },
-];
-
-const reviews = [
-  ['“Add a verified review before launch.”', 'Customer review'],
-  ['“Replace with a genuine customer quote.”', 'Customer review'],
-  ['“Only publish attributed, verified reviews.”', 'Customer review'],
-];
+import { client } from './client-config';
+const business = { ...client, reviews:client.reviewCount };
+const workImages = client.gallery;
+const reviews = client.reviews;
 
 function App() {
   const [unlocked, setUnlocked] = useState(() => sessionStorage.getItem('barbershop-preview') === '1');
@@ -87,13 +35,13 @@ function App() {
   selectionRef.current={date:selectedDate,time:bookingTime};
 
   useEffect(() => {
-    document.title = unlocked ? 'Your Barbershop — Concept Preview' : 'Private Concept — Your Barbershop';
+    document.title = unlocked ? client.name+' — Concept Preview' : 'Private Concept — '+client.name;
   }, [unlocked]);
 
 
   const unlock = (event: FormEvent) => {
     event.preventDefault();
-    if (pin === '0000') {
+    if (pin === client.previewPin) {
       sessionStorage.setItem('barbershop-preview', '1');
       setUnlocked(true);
       setError('');
@@ -194,9 +142,9 @@ function App() {
     return (
       <main className="gate">
         <section className="gate-panel">
-          <p className="gate-brand">YOUR BARBERSHOP</p>
+          <p className="gate-brand">{client.shortName}</p>
           <h1>Private website preview</h1>
-          <p>This independent concept has been prepared for Your Barbershop. It is not the live business website.</p>
+          <p>This independent concept has been prepared for {client.name}. It is not the live business website.</p>
           <form onSubmit={unlock}>
             <label htmlFor="pin">Preview PIN</label>
             <div className="pin-row">
@@ -213,7 +161,7 @@ function App() {
   return (
     <div className="site">
       <a className="skip-link" href="#booking">Skip to booking</a>
-      <div className="preview-note preview-ticker" role="region" aria-label="Your Barbershop announcements">
+      <div className="preview-note preview-ticker" role="region" aria-label={client.name+' announcements'}>
         <div className="preview-ticker-track" aria-hidden="true">
           {[0,1,2,3].map(i => <div className="preview-ticker-set" key={i}>
             <span>BOOKINGS AVAILABLE</span><span className="ticker-dot">✦</span>
@@ -225,7 +173,7 @@ function App() {
       </div>
 
       <header>
-        <button className="brand" onClick={() => go('top')}>YOUR BARBERSHOP</button>
+        <button className="brand" onClick={() => go('top')}>{client.shortName}</button>
         <nav className={menuOpen ? 'open' : ''}>
           <button onClick={() => go('work')}>Gallery</button>
           <button onClick={() => go('booking')}>Availability</button>
@@ -243,9 +191,9 @@ function App() {
       <main>
         <section className="hero" id="top">
           <div className="hero-copy">
-            <div className="hero-top"><p className="hero-location">LOCAL BARBERS · YOUR TOWN</p>
-            <h1>YOUR<br/>BARBERSHOP</h1></div>
-            <div className="hero-bottom"><p className="hero-service-line">Haircuts · Fades · Beards · Shaves</p>
+            <div className="hero-top"><p className="hero-location">{client.locationLabel}</p>
+            <h1>{client.headline[0]}<br/>{client.headline[1]}</h1></div>
+            <div className="hero-bottom"><p className="hero-service-line">{client.tagline}</p>
             <div className="rating-row">
               <div className="stars">{[0,1,2,3,4].map(i => <Star key={i} size={17} fill="currentColor" />)}</div>
               <strong>{business.rating||'—'}</strong>
@@ -258,12 +206,12 @@ function App() {
           </div>
 
           <figure className="hero-image">
-            <img src={business.heroImage} alt="Hair styling at Your Barbershop barbershop" />
+            <img src={business.heroImage} alt={client.name+' hero placeholder'} />
           </figure>
         </section>
 
-        <section className="trust-strip" aria-label="Why visit Your Barbershop">
-          <a className="trust-item trust-reviews" href={business.googleMaps} target="_blank" rel="noopener noreferrer" aria-label={`Find Your Barbershop on Google Maps. Rating ${business.rating||'—'} out of 5 from ${business.reviews||'—'} reviews`}>
+        <section className="trust-strip" aria-label={'Why visit '+client.name}>
+          <a className="trust-item trust-reviews" href={business.googleMaps} target="_blank" rel="noopener noreferrer" aria-label={`Find ${client.name} on Google Maps. Rating ${business.rating||'—'} out of 5 from ${business.reviews||'—'} reviews`}>
             <span className="trust-icon trust-google" aria-hidden="true">G</span>
             <span className="trust-copy">
               <span className="trust-primary"><strong>{business.rating||'—'}<small>/5</small></strong><span className="trust-stars" aria-label="Five stars">{[0,1,2,3,4].map(i => <Star key={i} size={15} fill="currentColor" />)}</span></span>
@@ -350,7 +298,7 @@ function App() {
               <div className="booking-preview-head">
                 <div><h3>Choose your appointment.</h3></div>
               </div>
-              <div className="booking-phone-option"><span>Prefer to book by phone?</span><a href={business.phoneHref} aria-label={`Call Your Barbershop on ${business.phone}`}><Phone size={16}/> <span>{business.phone}</span></a></div>
+              <div className="booking-phone-option"><span>Prefer to book by phone?</span><a href={business.phoneHref} aria-label={`Call ${client.name} on ${business.phone}`}><Phone size={16}/> <span>{business.phone}</span></a></div>
               {!bookingConfirmation && (!slotsLoaded ? <p className="simple-booking-empty">Checking upcoming availability…</p> :
                 bookingDates.length===0 ? <div className="simple-booking-empty">
                   <CalendarDays size={27}/><p>No appointment times have been published yet.</p>
@@ -400,7 +348,7 @@ function App() {
 
         <section className="visit" id="visit">
           <div className="map-wrap">
-            <iframe title="Your Barbershop location" src={business.googleEmbed} loading="lazy" referrerPolicy="no-referrer-when-downgrade" />
+            <iframe title={client.name+' location'} src={business.googleEmbed} loading="lazy" referrerPolicy="no-referrer-when-downgrade" />
           </div>
 
           <div className="visit-panel">
@@ -421,7 +369,7 @@ function App() {
       </main>
 
       <footer>
-        <strong>YOUR BARBERSHOP</strong>
+        <strong>{client.shortName}</strong>
         <span>Your shop address</span>
         <div className="footer-links"><a href={business.phoneHref}>Call {business.phone}</a><a href={business.googleMaps} target="_blank" rel="noreferrer">Directions</a><a href={business.facebook} target="_blank" rel="noreferrer">Facebook</a></div>
       </footer>
@@ -444,7 +392,7 @@ function App() {
           <h2 id="booking-confirmed-title">{previewOnly?'Booking preview complete':"You're booked in."}</h2>
           <p className="booking-modal-name">{bookingConfirmation.name}</p>
           <p className="booking-modal-time">{new Date(bookingConfirmation.date+'T12:00:00').toLocaleDateString('en-GB',{weekday:'long',day:'numeric',month:'long',year:'numeric'})} at {bookingConfirmation.time}</p>
-          <p className="booking-modal-address">Your Barbershop · Your shop address</p>
+          <p className="booking-modal-address">{client.name} · {client.address}</p>
           <p className="booking-modal-note">{previewOnly?'PREVIEW ONLY — This demonstrates the confirmation customers would see after booking. No appointment has been reserved and no email has been sent.':emailBooking?(bookingConfirmation.emailSent?'A confirmation email is on its way. Please also keep these details.':'Your booking is confirmed, but the email could not be sent. Please save these details.'):'Your appointment is confirmed. No text or email will be sent, so save these details.'}</p>
           <button className="booking-modal-dismiss" onClick={()=>setConfirmationOpen(false)}>Done</button>
         </div>
