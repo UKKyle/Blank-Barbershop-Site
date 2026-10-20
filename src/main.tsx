@@ -376,7 +376,7 @@ function App() {
 
       {termsOpen && <div className="terms-backdrop" onMouseDown={event=>{if(event.target===event.currentTarget)setTermsOpen(false);}}>
         <div className="terms-dialog" role="dialog" aria-modal="true" aria-labelledby="terms-heading">
-          <div className="terms-dialog-head"><div><span className="terms-eyebrow">YOUR BARBERSHOP · APPOINTMENTS</span><h2 id="terms-heading">Terms &amp; Conditions</h2></div><button type="button" className="terms-close" onClick={()=>setTermsOpen(false)} aria-label="Close terms">×</button></div>
+          <div className="terms-dialog-head"><div><span className="terms-eyebrow">{client.shortName} · APPOINTMENTS</span><h2 id="terms-heading">Terms &amp; Conditions</h2></div><button type="button" className="terms-close" onClick={()=>setTermsOpen(false)} aria-label="Close terms">×</button></div>
           <div className="terms-dialog-body">
             <h3>Arriving for your appointment</h3><p>Please arrive at your selected time. If you arrive late or miss your appointment, the barber may be unable to complete your service and may ask you to wait for the next available walk-in opportunity.</p>
             <h3>Changing or cancelling</h3><p>If you need to change or cancel your appointment, please telephone the shop on <a href={business.phoneHref}>{business.phone}</a> as soon as possible. Online changes and cancellations are not currently offered.</p>
