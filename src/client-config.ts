@@ -36,6 +36,11 @@ export const client = {
     ['“Replace with a genuine customer quote.”','Customer review'],
     ['“Only publish attributed, verified reviews.”','Customer review'],
   ],
+  // Demo appointment generation (weekday 0=Sunday). Adjust to verified client hours.
+  bookingHours: {
+    0:['11:00','16:00'],1:['09:30','19:00'],2:['09:30','19:00'],
+    3:['09:30','19:00'],4:['09:30','19:00'],5:['09:30','19:00'],6:['08:30','17:00'],
+  } as Record<number,[string,string]>,
   hours: [
     ['Monday–Friday','Hours to be confirmed'],
     ['Saturday','Hours to be confirmed'],
