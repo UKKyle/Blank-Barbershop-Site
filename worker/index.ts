@@ -1,3 +1,4 @@
+import { client } from '../src/client-config';
 import { createRemoteJWKSet, jwtVerify } from 'jose';
 
 interface Env {
@@ -40,10 +41,7 @@ async function body(request:Request):Promise<Record<string,unknown>> {
   return result as Record<string,unknown>;
 }
 
-const openingHours:Record<number,[string,string]> = {
-  0:['11:00','16:00'],1:['09:30','19:00'],2:['09:30','19:00'],
-  3:['09:30','19:00'],4:['09:30','19:00'],5:['09:30','19:00'],6:['08:30','17:00']
-};
+const openingHours:Record<number,[string,string]> = client.bookingHours;
 function londonParts(now:Date) {
   const parts=Object.fromEntries(new Intl.DateTimeFormat('en-GB',{timeZone:'Europe/London',year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',hourCycle:'h23'}).formatToParts(now).map(x=>[x.type,x.value]));
   return {date:`${parts.year}-${parts.month}-${parts.day}`,time:`${parts.hour}:${parts.minute}`};
@@ -97,9 +95,9 @@ async function verifyTurnstile(token:string,request:Request,env:Env) {
 }
 async function sendConfirmation(env:Env,email:string,name:string,date:string,time:string) {
  const pretty=new Date(date+'T12:00:00Z').toLocaleDateString('en-GB',{timeZone:'UTC',weekday:'long',day:'numeric',month:'long',year:'numeric'});
- const details={date:pretty,time,shop:"Your Barbershop",address:"Your shop address"};
+ const details={date:pretty,time,shop:client.name,address:client.address};
  const html=`<!doctype html><html><head><meta charset="utf-8"></head><body style="margin:0;background:#f5f1ea;font-family:Arial,Helvetica,sans-serif;color:#2b211a"><table role="presentation" cellpadding="0" cellspacing="0" width="100%" style="padding:36px 15px"><tr><td align="center"><table role="presentation" width="100%" style="max-width:520px;background:#fff;border:1px solid #e8dcd0;border-radius:12px;padding:35px"><tr><td><p style="font-size:12px;letter-spacing:3px;color:#987048;font-weight:bold">YOUR BARBERSHOP</p><h1 style="font-size:30px;margin:30px 0 15px">You're booked in.</h1><p>Hi ${safeHtml(name)},</p><p>Your appointment is confirmed. Here are your details:</p><div style="background:#f5f1ea;padding:20px;border-radius:8px;margin:24px 0"><strong>${safeHtml(details.date)}</strong><br><span style="font-size:24px;font-weight:bold">${safeHtml(details.time)}</span><p style="margin-bottom:0">${safeHtml(details.shop)}<br>${safeHtml(details.address)}</p></div><p>Please arrive on time. If you need to cancel or change your appointment, contact the shop on <a style="color:#80603e" href="#contact">Your shop number</a>.</p><p style="font-size:12px;color:#776d64;margin-top:30px">This message confirms a booking you made. It is not a marketing email.</p></td></tr></table></td></tr></table></body></html>`;
- const res=await fetch('https://api.resend.com/emails',{method:'POST',headers:{Authorization:'Bearer '+env.RESEND_API_KEY,'Content-Type':'application/json'},body:JSON.stringify({from:env.BOOKING_FROM_EMAIL,to:[email],subject:'Your Barbershop appointment — '+pretty,html})});
+ const res=await fetch('https://api.resend.com/emails',{method:'POST',headers:{Authorization:'Bearer '+env.RESEND_API_KEY,'Content-Type':'application/json'},body:JSON.stringify({from:env.BOOKING_FROM_EMAIL,to:[email],subject:client.name+' appointment — '+pretty,html})});
  return res.ok;
 }
 async function audit(env:Env,actor:string,action:string,target:string,details:Record<string,unknown>={}) {
