@@ -6,9 +6,10 @@ import { client } from './client-config';
 const business = { ...client, reviews:client.reviewCount };
 const workImages = client.gallery;
 const reviews = client.reviews;
+const salesDemo = true; // Isolated sales preview: no live booking requests or customer claims.
 
 function App() {
-  const [unlocked, setUnlocked] = useState(() => sessionStorage.getItem('barbershop-preview') === '1');
+  const [unlocked, setUnlocked] = useState(() => salesDemo || sessionStorage.getItem('barbershop-preview') === '1');
   const [pin, setPin] = useState('');
   const [error, setError] = useState('');
   const [menuOpen, setMenuOpen] = useState(false);
@@ -35,7 +36,7 @@ function App() {
   selectionRef.current={date:selectedDate,time:bookingTime};
 
   useEffect(() => {
-    document.title = unlocked ? client.name+' — Concept Preview' : 'Private Concept — '+client.name;
+    document.title = salesDemo ? 'The Modern Barber — Interactive Website Demo' : unlocked ? client.name+' — Concept Preview' : 'Private Concept — '+client.name;
   }, [unlocked]);
 
 
@@ -56,6 +57,15 @@ function App() {
   };
 
   const refreshSlots = async () => {
+    if (salesDemo) {
+      const slots:{date:string;time:string}[]=[];
+      for(let offset=1;offset<=7;offset++){
+        const d=new Date(); d.setHours(12,0,0,0); d.setDate(d.getDate()+offset);
+        const date=[d.getFullYear(),String(d.getMonth()+1).padStart(2,'0'),String(d.getDate()).padStart(2,'0')].join('-');
+        for(const time of ['09:30','10:30','11:30','13:00','14:00','15:00','16:00'])slots.push({date,time});
+      }
+      setAvailableSlots(slots);setSelectedDate(slots[0].date);setSlotsLoaded(true);return slots;
+    }
     const response = await fetch('/api/slots', {cache:'no-store'});
     if (!response.ok) throw new Error('Unable to refresh appointments');
     const data:{slots:{date:string;time:string}[]} = await response.json();
@@ -88,6 +98,7 @@ function App() {
 
   useEffect(()=>{
     let active=true;
+    if(salesDemo)return;
     fetch('/api/booking-config',{cache:'no-store'}).then(r=>r.json()).then((v:{previewOnly?:boolean;emailEnabled?:boolean;turnstileSiteKey?:string})=>{
       if(!active)return;
       setPreviewOnly(v.previewOnly!==false);
@@ -114,7 +125,7 @@ function App() {
   const confirmBooking = async (event:FormEvent) => {
     event.preventDefault();
     if(!selectedDate || !bookingTime || !acceptedArrivalTerms || customerName.trim().length<2 || (previewOnly && !customerEmail.includes('@')) || (!previewOnly && emailBooking && (!customerEmail.includes('@') || !turnstileToken))) return;
-    if(previewOnly){setBookingConfirmation({date:selectedDate!,time:bookingTime!,name:customerName.trim()});setConfirmationOpen(true);return;}
+    if(salesDemo||previewOnly){setBookingConfirmation({date:selectedDate!,time:bookingTime!,name:customerName.trim()});setConfirmationOpen(true);return;}
     setBookingSubmitting(true);setBookingError('');
     try {
       const res=await fetch('/api/bookings',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({date:selectedDate,time:bookingTime,name:customerName.trim(),accepted_terms:true,...(emailBooking?{email:customerEmail.trim(),turnstile_token:turnstileToken}:{})})});
@@ -153,7 +164,7 @@ function App() {
             </div>
             {error && <p className="gate-error">{error}</p>}
           </form>
-        </section>
+        </section>}
       </main>
     );
   }
@@ -164,9 +175,9 @@ function App() {
       <div className="preview-note preview-ticker" role="region" aria-label={client.name+' announcements'}>
         <div className="preview-ticker-track" aria-hidden="true">
           {[0,1,2,3].map(i => <div className="preview-ticker-set" key={i}>
-            <span>BOOKINGS AVAILABLE</span><span className="ticker-dot">✦</span>
-            <span>YOUR TRUSTED NEIGHBOURHOOD BARBER</span><span className="ticker-dot">✦</span>
-            <span>PRIVATE CONCEPT WEBSITE</span><span className="ticker-dot">✦</span>
+            <span>INTERACTIVE DEMO</span><span className="ticker-dot">✦</span>
+            <span>CUSTOMISE FOR YOUR SHOP</span><span className="ticker-dot">✦</span>
+            <span>NO REAL BOOKINGS</span><span className="ticker-dot">✦</span>
           </div>)}
         </div>
         <span className="sr-only">Bookings available. Your trusted neighbourhood barber. Private concept website, not the live business website.</span>
@@ -177,9 +188,9 @@ function App() {
         <nav className={menuOpen ? 'open' : ''}>
           <button onClick={() => go('work')}>Gallery</button>
           <button onClick={() => go('booking')}>Availability</button>
-          <button onClick={() => go('reviews')}>Reviews</button>
+          {!salesDemo && <button onClick={() => go('reviews')}>Reviews</button>}
           <button onClick={() => go('visit')}>Visit</button>
-          <a href={business.facebook} target="_blank" rel="noreferrer">Facebook</a>
+          {!salesDemo && <a href={business.facebook} target="_blank" rel="noreferrer">Facebook</a>}
         </nav>
         <a className="header-cta" href="#booking">BOOK APPOINTMENT</a>
         <a className="mobile-header-book" href="#booking" aria-label="View appointment availability"><CalendarDays size={15} aria-hidden="true" /> <span>Book</span></a>
@@ -194,14 +205,14 @@ function App() {
             <div className="hero-top"><p className="hero-location">{client.locationLabel}</p>
             <h1>{client.headline[0]}<br/>{client.headline[1]}</h1></div>
             <div className="hero-bottom"><p className="hero-service-line">{client.tagline}</p>
-            <div className="rating-row">
+            {!salesDemo && <div className="rating-row">
               <div className="stars">{[0,1,2,3,4].map(i => <Star key={i} size={17} fill="currentColor" />)}</div>
               <strong>{business.rating||'—'}</strong>
               <span>{business.reviews||'—'} reviews</span>
-            </div>
+            </div>}
             <div className="hero-actions">
               <a className="hero-primary" href="#booking"><CalendarDays size={16} /> Book appointment</a>
-              <a className="hero-secondary" href={business.googleMaps} target="_blank" rel="noreferrer"><MapPin size={16} /> Directions</a>
+              <a className="hero-secondary" href="#work"><ChevronRight size={16} /> Explore the demo</a>
             </div></div>
           </div>
 
@@ -210,34 +221,16 @@ function App() {
           </figure>
         </section>
 
-        <section className="trust-strip" aria-label={'Why visit '+client.name}>
-          <a className="trust-item trust-reviews" href={business.googleMaps} target="_blank" rel="noopener noreferrer" aria-label={`Find ${client.name} on Google Maps. Rating ${business.rating||'—'} out of 5 from ${business.reviews||'—'} reviews`}>
-            <span className="trust-icon trust-google" aria-hidden="true">G</span>
-            <span className="trust-copy">
-              <span className="trust-primary"><strong>{business.rating||'—'}<small>/5</small></strong><span className="trust-stars" aria-label="Five stars">{[0,1,2,3,4].map(i => <Star key={i} size={15} fill="currentColor" />)}</span></span>
-              <span className="trust-detail">{business.reviews||'—'} customer reviews <ChevronRight size={14} aria-hidden="true" /></span>
-            </span>
-          </a>
-          <a className="trust-item" href="#booking" aria-label="Open every day. View appointment availability and book online">
-            <span className="trust-icon" aria-hidden="true"><CalendarDays size={23} strokeWidth={1.6} /></span>
-            <span className="trust-copy">
-              <span className="trust-primary"><strong>Mon–Sun</strong></span>
-              <span className="trust-detail">See appointments · Book online</span>
-            </span>
-          </a>
-          <a className="trust-item" href={business.googleMaps} target="_blank" rel="noopener noreferrer">
-            <span className="trust-icon" aria-hidden="true"><MapPin size={23} strokeWidth={1.6} /></span>
-            <span className="trust-copy">
-              <span className="trust-primary"><strong>Your location</strong></span>
-              <span className="trust-detail">Your location · Directions <ChevronRight size={14} aria-hidden="true" /></span>
-            </span>
-          </a>
+        <section className="trust-strip" aria-label="Demo features">
+          <a className="trust-item" href="#booking"><span className="trust-icon"><CalendarDays size={23}/></span><span className="trust-copy"><span className="trust-primary"><strong>Online booking</strong></span><span className="trust-detail">Try the interactive calendar</span></span></a>
+          <a className="trust-item" href="#work"><span className="trust-icon"><Star size={23}/></span><span className="trust-copy"><span className="trust-primary"><strong>Your portfolio</strong></span><span className="trust-detail">Showcase your best cuts</span></span></a>
+          <a className="trust-item" href="#visit"><span className="trust-icon"><MapPin size={23}/></span><span className="trust-copy"><span className="trust-primary"><strong>Your business details</strong></span><span className="trust-detail">Tailored to your shop</span></span></a>
         </section>
 
         <section className="work-showcase" id="work">
           <div className="work-head">
             <div>
-              <h2>Recent cuts.</h2>
+              <h2>Showcase your best work.</h2>
             </div>
             <div className="work-controls" aria-label="Browse recent work">
               <button type="button" onClick={() => moveWorkReel(-1)} aria-label="Previous image">
@@ -259,7 +252,7 @@ function App() {
           </div>
         </section>
 
-        <section className="reviews" id="reviews">
+        {!salesDemo && <section className="reviews" id="reviews">
           <div className="reviews-head">
             <div>
               <h2>A reputation already earned.</h2>
@@ -287,18 +280,18 @@ function App() {
             <span>Read more customer feedback</span>
             <a href={business.googleMaps} target="_blank" rel="noreferrer">View location details</a>
           </div>
-        </section>
+        </section>}
 
         <section className="services" id="services">
           <div className="services-shell">
             <div className="services-copy">
-              <h2>Book your next visit.</h2>
+              <h2>Try the booking experience.</h2><p>Interactive demonstration only. No appointment is reserved.</p>
             </div>
             <div className="booking-preview simple-booking" id="booking" aria-label="Upcoming appointment availability">
               <div className="booking-preview-head">
                 <div><h3>Choose your appointment.</h3></div>
               </div>
-              <div className="booking-phone-option"><span>Prefer to book by phone?</span><a href={business.phoneHref} aria-label={`Call ${client.name} on ${business.phone}`}><Phone size={16}/> <span>{business.phone}</span></a></div>
+              {!salesDemo && <div className="booking-phone-option"><span>Prefer to book by phone?</span><a href={business.phoneHref} aria-label={`Call ${client.name} on ${business.phone}`}><Phone size={16}/> <span>{business.phone}</span></a></div>}
               {!bookingConfirmation && (!slotsLoaded ? <p className="simple-booking-empty">Checking upcoming availability…</p> :
                 bookingDates.length===0 ? <div className="simple-booking-empty">
                   <CalendarDays size={27}/><p>No appointment times have been published yet.</p>
@@ -319,9 +312,9 @@ function App() {
               )}
               {bookingConfirmation ? <div className="booking-success" role="status">
                 <div className="booking-success-icon">✓</div>
-                <h4>You're booked in.</h4>
+                <h4>Preview complete.</h4>
                 <p>{bookingConfirmation.name} · {new Date(bookingConfirmation.date+'T12:00:00').toLocaleDateString('en-GB',{weekday:'long',day:'numeric',month:'long'})} at {bookingConfirmation.time}</p>
-                <p>Please arrive on time. No email or text confirmation is sent, so keep a note of your appointment.</p>
+                <p>This is only a demonstration. No appointment was reserved.</p>
                 <button type="button" onClick={()=>setBookingConfirmation(null)}>Book another appointment</button>
               </div> : <form className="simple-booking-form" onSubmit={confirmBooking}>
                 {bookingTime && selectedDate && <div className="booking-selection-summary"><span>Your appointment</span><strong>{new Date(selectedDate+'T12:00:00').toLocaleDateString('en-GB',{weekday:'short',day:'numeric',month:'long'})} · {bookingTime}</strong></div>}
@@ -346,7 +339,7 @@ function App() {
           </div>
         </section>
 
-        <section className="visit" id="visit">
+        {!salesDemo && <section className="visit" id="visit">
           <div className="map-wrap">
             <iframe title={client.name+' location'} src={business.googleEmbed} loading="lazy" referrerPolicy="no-referrer-when-downgrade" />
           </div>
@@ -370,8 +363,8 @@ function App() {
 
       <footer>
         <strong>{client.shortName}</strong>
-        <span>Your shop address</span>
-        <div className="footer-links"><a href={business.phoneHref}>Call {business.phone}</a><a href={business.googleMaps} target="_blank" rel="noreferrer">Directions</a><a href={business.facebook} target="_blank" rel="noreferrer">Facebook</a></div>
+        <span>Example website · Not a real barbershop</span>
+        <div className="footer-links"><a href="#work">Gallery</a><a href="#booking">Booking demo</a><a href="#top">Back to top</a></div>
       </footer>
 
       {termsOpen && <div className="terms-backdrop" onMouseDown={event=>{if(event.target===event.currentTarget)setTermsOpen(false);}}>
@@ -399,7 +392,7 @@ function App() {
       </div>}
       <div className="mobile-actions" aria-label="Quick actions">
         <a href="#booking"><CalendarDays size={17} /> Book</a>
-        <a href={business.googleMaps} target="_blank" rel="noreferrer"><MapPin size={17} /> Directions</a>
+        <a href="#work"><ChevronRight size={17} /> Gallery</a>
       </div>
     </div>
   );
