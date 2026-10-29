@@ -4,11 +4,11 @@
  * Only publish verified contact details, photos and customer reviews.
  */
 export const client = {
-  name: 'Your Barbershop',
-  shortName: 'YOUR BARBERSHOP',
-  headline: ['YOUR', 'BARBERSHOP'],
-  locationLabel: 'LOCAL BARBERS · YOUR TOWN',
-  tagline: 'Haircuts · Fades · Beards · Shaves',
+  name: 'The Modern Barber',
+  shortName: 'THE MODERN BARBER',
+  headline: ['THE MODERN', 'BARBER'],
+  locationLabel: 'A MODERN BARBERSHOP EXPERIENCE',
+  tagline: 'Precision cuts · Fresh fades · Easy online booking',
   previewPin: '0000',
   phone: 'Your shop telephone',
   phoneHref: '#contact',
